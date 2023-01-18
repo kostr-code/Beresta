@@ -1,5 +1,9 @@
 #include "../include/window.h"
 
+/*
+TODO Реалозавть для каждого желаемого виджет класс-обертку для удобной рабты над ним
+     Для этого составить список необходимых виджетов и примерный внешний вид приложения
+*/
 static void glfw_error_callback(int error, const char* description)
 {
     fprintf(stderr, "Glfw Error %d: %s\n", error, description);
@@ -72,12 +76,22 @@ void Window::MainLoop(){
         {
             static float f = 0.0f;
             static int counter = 0;
-
-            ImGui::Begin("Hello, world!"); 
-            ImGui::MenuItem("1");
-            ImGui::MenuItem("2"); 
-                
-            ImGui::End();
+            if (ImGui::BeginMainMenuBar()){
+                if (ImGui::BeginMenu("File")){
+                    ImGui::EndMenu();
+                }
+                if (ImGui::BeginMenu("Edit")){
+                    if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+                    if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+                    ImGui::Separator();
+                    if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+                    if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+                    if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+                ImGui::EndMenu();
+                }
+                ImGui::EndMainMenuBar();
+            }    
+            
         }
         // Rendering
         ImGui::Render();
