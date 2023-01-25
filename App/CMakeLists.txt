@@ -18,7 +18,8 @@ set(SOURCE_FILES_IMGUI
 
 set(SOURCE_FILE_MY
         ./src/main.cpp
-        ./src/window.cpp)
+        ./src/window.cpp
+        ./src/menubar.cpp)
 
 
 
