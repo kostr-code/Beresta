@@ -51,24 +51,26 @@ void Window::MainLoop(){
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
-        {
-            if (ImGui::BeginMainMenuBar()){
-                if (ImGui::BeginMenu("File")){
-                    ImGui::EndMenu();
-                }
-                if (ImGui::BeginMenu("Edit")){
-                    if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
-                    if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
-                    ImGui::Separator();
-                    if (ImGui::MenuItem("Cut", "CTRL+X")) {}
-                    if (ImGui::MenuItem("Copy", "CTRL+C")) {}
-                    if (ImGui::MenuItem("Paste", "CTRL+V")) {}
-                ImGui::EndMenu();
-                }
-                ImGui::EndMainMenuBar();
-            }    
+        // {
+        //     if (ImGui::BeginMainMenuBar()){
+        //         if (ImGui::BeginMenu("File")){
+        //             ImGui::EndMenu();
+        //         }
+        //         if (ImGui::BeginMenu("Edit")){
+        //             if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+        //             if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+        //             ImGui::Separator();
+        //             if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+        //             if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+        //             if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+        //         ImGui::EndMenu();
+        //         }
+        //         ImGui::EndMainMenuBar();
+        //     }    
             
-        }
+        // }
+
+        MenuBar();
         // Rendering
         this->Render();
 

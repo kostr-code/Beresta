@@ -9,6 +9,8 @@
 #endif
 #include <GLFW/glfw3.h> // Will drag system OpenGL headers
 
+void MenuBarItem(const char* title);
 void MenuBar();
+void MenuBar(const char** titles);
 
 #endif //MENUBAR_H

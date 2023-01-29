@@ -25,7 +25,7 @@ set(SOURCE_FILE_MY
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES_IMGUI} ${SOURCE_FILE_MY})
 
-set(LIBRARIES "glfw")
+set(LIBRARIES "glfw3")
 
 find_package(OpenGL REQUIRED)
 
