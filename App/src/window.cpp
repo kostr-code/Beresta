@@ -1,4 +1,6 @@
 #include "../include/window.h"
+#include <unistd.h>
+#include <stdio.h>
 
 /*
 TODO Реалозавть для каждого желаемого виджет класс-обертку для удобной рабты над ним
@@ -14,7 +16,7 @@ Window::Window(){
     if (!glfwInit())
         std::cout << "glfw window can not be init" << std::endl;
     this->VersionOfOGL();
-    this->window = glfwCreateWindow(1280, 720, "Beresta", NULL, NULL);
+    this->window = glfwCreateWindow(1280, 720, u8"Береста", NULL, NULL);
     glfwMakeContextCurrent(this->window);
     glfwSwapInterval(1);
         IMGUI_CHECKVERSION();
@@ -22,21 +24,16 @@ Window::Window(){
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
- 
+    io.Fonts->Clear();
+    io.Fonts->AddFontFromFileTTF("../../App/recources/fonts/UbuntuMono-B.ttf", 14.0f, NULL, io.Fonts->GetGlyphRangesCyrillic());
+
+    io.Fonts->Build();
     ImGui::StyleColorsDark();
     //ImGui::StyleColorsLight();
 
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(this->window, true);
     ImGui_ImplOpenGL3_Init(this->glsl_version); 
-    
-}
-
-Window::Window(GLFWwindow* window){
-    this->window = window;
-}
-
-void Window::MainLoop(){
     while (!glfwWindowShouldClose(window))
     {
         // Poll and handle events (inputs, window resize, etc.)
@@ -51,29 +48,52 @@ void Window::MainLoop(){
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
-        // {
-        //     if (ImGui::BeginMainMenuBar()){
-        //         if (ImGui::BeginMenu("File")){
-        //             ImGui::EndMenu();
-        //         }
-        //         if (ImGui::BeginMenu("Edit")){
-        //             if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
-        //             if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
-        //             ImGui::Separator();
-        //             if (ImGui::MenuItem("Cut", "CTRL+X")) {}
-        //             if (ImGui::MenuItem("Copy", "CTRL+C")) {}
-        //             if (ImGui::MenuItem("Paste", "CTRL+V")) {}
-        //         ImGui::EndMenu();
-        //         }
-        //         ImGui::EndMainMenuBar();
-        //     }    
+        {
+            if (ImGui::BeginMainMenuBar()){
+                if (ImGui::BeginMenu(u8"Файл")){
+                    if(ImGui::MenuItem(u8"Создать файл")) {}
+                    if(ImGui::MenuItem(u8"Открыть файл")) {}
+                    ImGui::Separator();
+                    if(ImGui::MenuItem(u8"Сохранить")) {}
+                    if(ImGui::MenuItem(u8"Сохранить как")) {}
+                    ImGui::Separator();
+                    if(ImGui::MenuItem(u8"Создать папку")) {}
+                    ImGui::EndMenu();
+                }
+                if (ImGui::BeginMenu(u8"Инструменты")){
+                    if (ImGui::MenuItem(u8"Открыть в кодировке")) {}
+                    if (ImGui::MenuItem(u8"Сохранить в кодировке")) {}  // Disabled item
+                    ImGui::Separator();
+                    if (ImGui::MenuItem(u8"Найти")) {}
+                    if (ImGui::MenuItem(u8"Заменить")) {}
+                    if (ImGui::MenuItem(u8"Рефактор")) {}
+                    ImGui::Separator();
+                    if (ImGui::BeginMenu(u8"Вид")) {
+                        if(ImGui::MenuItem(u8"Полный экран")) {}
+                        if(ImGui::MenuItem(u8"Только файл")) {}
+                        if(ImGui::BeginMenu(u8"Сплит")) {
+                            if(ImGui::MenuItem(u8"2 горизонтально")) {}
+                            if(ImGui::MenuItem(u8"2 вертикально")) {}
+                            if(ImGui::MenuItem(u8"Сетка 2х2")) {}
+                            ImGui::EndMenu();
+                        }
+                        ImGui::EndMenu();
+                    }
+                    ImGui::EndMenu();
+                }
+                if (ImGui::BeginMenu(u8"Помощь")){
+                    if (ImGui::MenuItem(u8"О приложении")) {}
+                    if (ImGui::MenuItem(u8"Документация")) {}
+                    if (ImGui::MenuItem(u8"Сайт")) {}
+                    if (ImGui::MenuItem(u8"Форум")) {}
+                    ImGui::EndMenu();
+                    }
+                ImGui::EndMainMenuBar();
+            }    
             
-        // }
-
-        MenuBar();
+        }
         // Rendering
         this->Render();
-
         glfwSwapBuffers(this->window);
     }
 }

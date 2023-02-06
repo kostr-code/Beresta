@@ -42,8 +42,6 @@ protected:
     
 public:
     Window();
-    Window(GLFWwindow *window);
-    void MainLoop();
     ~Window();
 };
 
