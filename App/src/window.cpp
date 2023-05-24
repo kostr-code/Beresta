@@ -98,12 +98,7 @@ Window::Window(){
                 ImGui::TreePop();
             }
             ImGui::End();
-            std::string s = "string";
-            ImVector<char> str;
-            for(char i : s){
-                str.push_back(i);
-            }
-            RenderTextField(str);
+            RenderTextField();
 
             // For this demo we are using ImVector as a string container.
             // Note that because we need to store a terminating zero character, our size/capacity are 1 more
@@ -163,7 +158,7 @@ void Window::Render(){
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void Window::RenderTextField(ImVector<char> &str) {
+void Window::RenderTextField() {
     /*
     TODO: Необходимо переделать так,
         чтобы последний символ не съедался при редактировании
@@ -193,9 +188,6 @@ void Window::RenderTextField(ImVector<char> &str) {
         }
     };
     static ImVector<char> my_str;
-    if(!str.empty()){
-        my_str = str;
-    }
     if (my_str.empty())
         my_str.push_back(0);
     Funcs::MyInputTextMultiline("##MyStr", &my_str, ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16));

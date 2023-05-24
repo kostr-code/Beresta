@@ -43,7 +43,7 @@ protected:
     
 public:
     Window();
-    void RenderTextField(ImVector<char> &str);
+    void RenderTextField();
     ~Window();
 };
 
