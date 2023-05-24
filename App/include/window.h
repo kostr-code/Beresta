@@ -22,6 +22,7 @@ class Window
 {
 private:
     GLFWwindow *window;
+    ImGuiWindowFlags window_flags = 0 | ImGuiWindowFlags_NoTitleBar;
     const char *glsl_version;
     ImVec4 clear_color = ImVec4(0.02f, 0.22f, 0.42f, 1.00f);
     int display_w, display_h;
@@ -42,6 +43,7 @@ protected:
     
 public:
     Window();
+    void RenderTextField(ImVector<char> &str);
     ~Window();
 };
 

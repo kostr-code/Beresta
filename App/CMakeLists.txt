@@ -29,6 +29,8 @@ set(LIBRARIES "glfw3")
 
 find_package(OpenGL REQUIRED)
 
+
+
 include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
 
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} ${LIBRARIES})

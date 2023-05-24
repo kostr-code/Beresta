@@ -1,6 +1,7 @@
 #include "../include/window.h"
 #include <unistd.h>
-#include <stdio.h>
+#include <cstdio>
+#include <functional>
 
 /*
 TODO Реалозавть для каждого желаемого виджет класс-обертку для удобной рабты над ним
@@ -30,7 +31,6 @@ Window::Window(){
     io.Fonts->Build();
     ImGui::StyleColorsDark();
     //ImGui::StyleColorsLight();
-
     // Setup Platform/Renderer backends
     ImGui_ImplGlfw_InitForOpenGL(this->window, true);
     ImGui_ImplOpenGL3_Init(this->glsl_version); 
@@ -47,8 +47,11 @@ Window::Window(){
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
+        ImGui::ShowDemoWindow();
+
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
         {
+            ImGui::Begin("Береста", nullptr, this->window_flags);
             if (ImGui::BeginMainMenuBar()){
                 if (ImGui::BeginMenu(u8"Файл")){
                     if(ImGui::MenuItem(u8"Создать файл")) {}
@@ -89,8 +92,22 @@ Window::Window(){
                     ImGui::EndMenu();
                     }
                 ImGui::EndMainMenuBar();
-            }    
-            
+            }
+            if(ImGui::TreeNode("Start")){
+
+                ImGui::TreePop();
+            }
+            ImGui::End();
+            std::string s = "string";
+            ImVector<char> str;
+            for(char i : s){
+                str.push_back(i);
+            }
+            RenderTextField(str);
+
+            // For this demo we are using ImVector as a string container.
+            // Note that because we need to store a terminating zero character, our size/capacity are 1 more
+            // than usually reported by a typical string class.
         }
         // Rendering
         this->Render();
@@ -144,4 +161,42 @@ void Window::Render(){
         );
     glClear(GL_COLOR_BUFFER_BIT);
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void Window::RenderTextField(ImVector<char> &str) {
+    /*
+    TODO: Необходимо переделать так,
+        чтобы последний символ не съедался при редактировании
+     */
+    struct Funcs
+    {
+        static int MyResizeCallback(ImGuiInputTextCallbackData* data)
+        {
+            if (data->EventFlag == ImGuiInputTextFlags_CallbackResize)
+            {
+                ImVector<char>* my_str = (ImVector<char>*)data->UserData;
+                IM_ASSERT(my_str->begin() == data->Buf);
+                my_str->resize(data->BufSize); // NB: On resizing calls, generally data->BufSize == data->BufTextLen + 1
+                data->Buf = my_str->begin();
+            }
+            //return 0;
+        }
+
+        // Note: Because ImGui:: is a namespace you would typically add your own function into the namespace.
+        // For example, you code may declare a function 'ImGui::InputText(const char* label, MyString* my_str)'
+        static bool MyInputTextMultiline(const char* label, ImVector<char>* my_str, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0)
+        {
+            IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
+            flags |= ImGuiInputTextFlags_CallbackResize
+                    | ImGuiInputTextFlags_AllowTabInput;
+            return ImGui::InputTextMultiline(label, my_str->begin(), (size_t)my_str->size(), size, flags, Funcs::MyResizeCallback, (void*)my_str);
+        }
+    };
+    static ImVector<char> my_str;
+    if(!str.empty()){
+        my_str = str;
+    }
+    if (my_str.empty())
+        my_str.push_back(0);
+    Funcs::MyInputTextMultiline("##MyStr", &my_str, ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16));
 }
