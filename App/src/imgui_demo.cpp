@@ -7714,10 +7714,10 @@ static void ShowExampleAppCustomRendering(bool* p_open)
 // [SECTION] Example App: Documents Handling / ShowExampleAppDocuments()
 //-----------------------------------------------------------------------------
 
-// Simplified structure to mimic a Document model
+// Simplified structure to mimic a document model
 struct MyDocument
 {
-    const char* Name;       // Document title
+    const char* Name;       // document title
     bool        Open;       // Set when open (we keep an array of all available documents to simplify demo code!)
     bool        OpenPrev;   // Copy of Open from last update.
     bool        Dirty;      // Set when the document has been modified
@@ -7737,11 +7737,11 @@ struct MyDocument
     void DoForceClose() { Open = false; Dirty = false; }
     void DoSave()       { Dirty = false; }
 
-    // Display placeholder contents for the Document
+    // Display placeholder contents for the document
     static void DisplayContents(MyDocument* doc)
     {
         ImGui::PushID(doc);
-        ImGui::Text("Document \"%s\"", doc->Name);
+        ImGui::Text("document \"%s\"", doc->Name);
         ImGui::PushStyleColor(ImGuiCol_Text, doc->Color);
         ImGui::TextWrapped("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
         ImGui::PopStyleColor();
@@ -7754,7 +7754,7 @@ struct MyDocument
         ImGui::PopID();
     }
 
-    // Display context menu for the Document
+    // Display context menu for the document
     static void DisplayContextMenu(MyDocument* doc)
     {
         if (!ImGui::BeginPopupContextItem())
@@ -7781,7 +7781,7 @@ struct ExampleAppDocuments
         Documents.push_back(MyDocument("Carrot",              true,  ImVec4(1.0f, 0.8f, 0.5f, 1.0f)));
         Documents.push_back(MyDocument("Tomato",              false, ImVec4(1.0f, 0.3f, 0.4f, 1.0f)));
         Documents.push_back(MyDocument("A Rather Long Title", false));
-        Documents.push_back(MyDocument("Some Document",       false));
+        Documents.push_back(MyDocument("Some document",       false));
     }
 };
 

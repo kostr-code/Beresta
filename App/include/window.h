@@ -14,7 +14,7 @@
 
 
 #include "../include/core.h"
-
+#include "../include/document.h"
 
 static void glfw_error_callback(int error, const char *description);
 
@@ -26,6 +26,7 @@ private:
     const char *glsl_version;
     ImVec4 clear_color = ImVec4(0.02f, 0.22f, 0.42f, 1.00f);
     int display_w, display_h;
+    ImVector<document> open_documents;
 
 protected:
     /*! @brief
@@ -44,6 +45,8 @@ protected:
 public:
     Window();
     void RenderTextField();
+    static void RenderMenuBar();
+    static void RenderInputField();
     ~Window();
 };
 
