@@ -16,7 +16,7 @@ class document {
 private:
     char* name;
     char* text;
-    long long text_size{};
+    unsigned long text_size{};
     bool edited;
 
 protected:
@@ -25,7 +25,9 @@ protected:
 public:
     explicit document(const std::string& path);
     ImVector<char> getText();
+    [[nodiscard]] unsigned long getSize() const;
     [[nodiscard]] char* getName() const;
+    void saveFile(ImVector<char> text);
 
 
 };

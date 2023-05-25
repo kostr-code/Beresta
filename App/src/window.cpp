@@ -13,7 +13,9 @@ static void glfw_error_callback(int error, const char *description) {
 
 Window::Window() {
     this->open_documents.push_back(
-            document(R"(C:\Users\MKD\CLionProjects\Beresta\App\src\main.cpp)"));
+            document(R"(/home/kostr/Documents/Projects/Beresta/App/src/main.cpp)"));
+    this->open_documents.push_back(
+            document(R"(/home/kostr/Documents/Projects/Beresta/App/include/document.h)"));
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
         std::cout << "glfw window can not be init" << std::endl;
@@ -178,17 +180,17 @@ void Window::RenderTextField() {
     ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_Reorderable
                                      | ImGuiTabBarFlags_AutoSelectNewTabs;
     ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
-    static char text[10] = "";
     ImVector<char *> names;
+    ImVector<bool> opened;
     for(auto &doc: open_documents){
         names.push_back(doc.getName());
+        opened.push_back(true);
     }
     if (ImGui::BeginTabBar("Редактор", tab_bar_flags)) {
-        for (const auto &name: names) {
-            if (ImGui::BeginTabItem(name, nullptr ,ImGuiTabItemFlags_None)) {
-                ImGui::InputTextMultiline("##source", text, IM_ARRAYSIZE(text),
-                                          ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), flags);
-                ImGui::Text("This is the %s tab!", name);
+        for (int i = 0; i < open_documents.size(); i++) {
+            if (opened[i] && ImGui::BeginTabItem(open_documents[i].getName(), &opened[i] ,ImGuiTabItemFlags_None)) {
+                RenderInputField(open_documents[i].getText(), true);
+                //ImGui::Text("This is the %s tab!", name);
                 ImGui::EndTabItem();
             }
         }
@@ -196,7 +198,7 @@ void Window::RenderTextField() {
     }
 }
 
-void Window::RenderInputField() {
+void Window::RenderInputField(ImVector<char> text, bool change) {
     struct Funcs
     {
         static int MyResizeCallback(ImGuiInputTextCallbackData* data)
@@ -217,8 +219,8 @@ void Window::RenderInputField() {
         }
     };
     static ImVector<char> my_str;
-    if (my_str.empty())
-        my_str.push_back(0);
+    if (my_str.empty() || change)
+        my_str = text;
     Funcs::MyInputTextMultiline("##MyStr", &my_str, ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16));
 
 }

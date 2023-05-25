@@ -46,10 +46,10 @@ public:
     Window();
     void RenderTextField();
     static void RenderMenuBar();
-    static void RenderInputField();
+    static void RenderInputField(ImVector<char> text, bool change);
     ~Window();
 };
 
-static void glfw_error_callback(int error, const char *description);
+
 
 #endif // WINDOW_H

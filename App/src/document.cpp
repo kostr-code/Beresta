@@ -3,11 +3,13 @@
 //
 
 #include <fstream>
+#include <sstream>
+#include <filesystem>
 #include "../include/document.h"
 
 document::document(const std::string& path) {
-    size_t pos = path.find_last_of('\\')+1;
-    size_t size = path.find_last_of('.') - pos;
+    size_t pos = path.find_last_of('/')+1;
+    size_t size = path.size();
     this->name = (char*) malloc(size+1);
     for(int i = 0; i < size; i++){
         this->name[i] = path[pos+i];
@@ -29,14 +31,17 @@ char* document::getName() const {
     return name;
 }
 
+unsigned long document::getSize() const {
+    return this->text_size;
+}
+
 char* document::read_file(const std::string &path) {
+    this->text_size = std::filesystem::file_size(path);
     std::ifstream f(path);
     f.seekg(0, std::ios::end);
-    this->text_size  = f.tellg();
-    char* s;
-    s = (char*)malloc(this->text_size);
+    //size_t size = f.tellg();
+    char* s = (char*) malloc(this->text_size);
     f.seekg(0);
     f.read(s, this->text_size); // по стандарту можно в C++11, по факту работает и на старых компиляторах
-    s[text_size] = '\0';
     return s;
 }
