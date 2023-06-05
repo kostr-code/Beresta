@@ -8,7 +8,10 @@
 #include "../include/document.h"
 
 document::document(const std::string& path) {
-    size_t pos = path.find_last_of('/')+1;
+    size_t pos;
+    if((pos = path.find_last_of('\\')) == -1) {
+        pos = path.find_last_of('/') + 1;
+    }
     size_t size = path.size();
     this->name = (char*) malloc(size+1);
     for(int i = 0; i < size; i++){

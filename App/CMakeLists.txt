@@ -20,7 +20,8 @@ set(SOURCE_FILE_MY
         ./src/main.cpp
         ./src/window.cpp
         ./src/core.cpp
-        src/document.cpp)
+        ./src/document.cpp
+        ./src/directory_node.cpp)
 
 
 

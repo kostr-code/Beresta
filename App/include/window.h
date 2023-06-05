@@ -4,6 +4,7 @@
 #include "../include/imgui.h"
 #include "../include/imgui_impl_glfw.h"
 #include "../include/imgui_impl_opengl3.h"
+#include "../include/directory_node.h"
 #include <iostream>
 #define GL_SILENCE_DEPRECATION
 
@@ -26,6 +27,7 @@ private:
     const char *glsl_version;
     ImVec4 clear_color = ImVec4(0.02f, 0.22f, 0.42f, 1.00f);
     int display_w, display_h;
+    directory_node root_node = CreateDirectoryNodeTreeFromPath("C:/Users/MKD/CLionProjects/Beresta");
     ImVector<document> open_documents;
 
 protected:
@@ -47,6 +49,7 @@ public:
     void RenderTextField();
     static void RenderMenuBar();
     static void RenderInputField(ImVector<char> text, bool change);
+    void RecursivelyDisplayDirectoryNode(const directory_node& parentNode);
     ~Window();
 };
 

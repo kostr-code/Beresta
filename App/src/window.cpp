@@ -12,10 +12,10 @@ static void glfw_error_callback(int error, const char *description) {
 }
 
 Window::Window() {
-    this->open_documents.push_back(
-            document(R"(/home/kostr/Documents/Projects/Beresta/App/src/main.cpp)"));
-    this->open_documents.push_back(
-            document(R"(/home/kostr/Documents/Projects/Beresta/App/include/document.h)"));
+//    this->open_documents.push_back(
+//            document(R"(../../App/src/main.cpp)"));
+//    this->open_documents.push_back(
+//            document(R"(../../App/include/document.h)"));
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
         std::cout << "glfw window can not be init" << std::endl;
@@ -51,13 +51,14 @@ Window::Window() {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        ImGui::ShowDemoWindow();
+        //ImGui::ShowDemoWindow();
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
         {
             RenderMenuBar();
-            ImGui::Begin("Проект", nullptr, ImGuiWindowFlags_NoCollapse);
 
+            ImGui::Begin("Проект", nullptr, ImGuiWindowFlags_NoCollapse);
+            RecursivelyDisplayDirectoryNode(this->root_node);
             /*if(ImGui::TreeNode("Start")){
 
                 ImGui::TreePop();
@@ -189,6 +190,10 @@ void Window::RenderTextField() {
     if (ImGui::BeginTabBar("Редактор", tab_bar_flags)) {
         for (int i = 0; i < open_documents.size(); i++) {
             if (opened[i] && ImGui::BeginTabItem(open_documents[i].getName(), &opened[i] ,ImGuiTabItemFlags_None)) {
+                /*if(!opened[i]){
+                    open_documents.erase(&open_documents[i]);
+                    continue;
+                }*/
                 RenderInputField(open_documents[i].getText(), true);
                 //ImGui::Text("This is the %s tab!", name);
                 ImGui::EndTabItem();
@@ -215,12 +220,37 @@ void Window::RenderInputField(ImVector<char> text, bool change) {
         static bool MyInputTextMultiline(const char* label, ImVector<char>* my_str, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0)
         {
             IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
-            return ImGui::InputTextMultiline(label, my_str->begin(), (size_t)my_str->size(), size, flags | ImGuiInputTextFlags_CallbackResize, Funcs::MyResizeCallback, (void*)my_str);
+            return ImGui::InputTextMultiline(label, my_str->begin(), (size_t)my_str->size(), size, flags | ImGuiInputTextFlags_CallbackResize , Funcs::MyResizeCallback, (void*)my_str);
         }
     };
     static ImVector<char> my_str;
     if (my_str.empty() || change)
         my_str = text;
-    Funcs::MyInputTextMultiline("##MyStr", &my_str, ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16));
+    Funcs::MyInputTextMultiline("##MyStr", &my_str, ImVec2(-FLT_MIN, -FLT_MIN));
 
+}
+
+void Window::RecursivelyDisplayDirectoryNode(const directory_node& parentNode)
+{
+    ImGui::PushID(&parentNode);
+    if (parentNode.IsDirectory)
+    {
+        if (ImGui::TreeNodeEx(parentNode.FileName.c_str(), ImGuiTreeNodeFlags_SpanFullWidth))
+        {
+            for (const directory_node& childNode : parentNode.Children)
+                RecursivelyDisplayDirectoryNode(childNode);
+            ImGui::TreePop();
+        }
+    }
+    else
+    {
+        if(ImGui::IsItemClicked()){
+            open_documents.push_back(document(parentNode.FullPath));
+        }
+        if (ImGui::TreeNodeEx(parentNode.FileName.c_str(), ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_SpanFullWidth))
+        {
+            //open_documents.push_back(document(parentNode.FullPath));
+        }
+    }
+    ImGui::PopID();
 }
