@@ -2,6 +2,7 @@
 // Created by MKD on 05.06.2023.
 //
 
+#include <algorithm>
 #include "../include/directory_node.h"
 
 void RecursivelyAddDirectoryNodes(directory_node& parentNode, std::filesystem::directory_iterator directoryIterator)

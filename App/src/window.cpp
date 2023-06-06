@@ -2,6 +2,13 @@
 #include <unistd.h>
 #include <cstdio>
 #include <functional>
+#include <fstream>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <string.h>
+#include <unistd.h>
+#include <iostream>
+#include <sstream>
 
 /*
 TODO Реалозавть для каждого желаемого виджет класс-обертку для удобной рабты над ним
@@ -51,7 +58,7 @@ Window::Window() {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        //ImGui::ShowDemoWindow();
+        ImGui::ShowDemoWindow();
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
         {
@@ -67,6 +74,9 @@ Window::Window() {
             ImGui::End();
             ImGui::Begin("Редактор", nullptr, ImGuiWindowFlags_NoCollapse);
             RenderTextField();
+            ImGui::End();
+            ImGui::Begin("Терминал", nullptr, ImGuiWindowFlags_NoCollapse);
+            CreateTerminal();
             ImGui::End();
 
             // For this demo we are using ImVector as a string container.
@@ -244,13 +254,33 @@ void Window::RecursivelyDisplayDirectoryNode(const directory_node& parentNode)
     }
     else
     {
-        if(ImGui::IsItemClicked()){
-            open_documents.push_back(document(parentNode.FullPath));
-        }
         if (ImGui::TreeNodeEx(parentNode.FileName.c_str(), ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_SpanFullWidth))
         {
-            //open_documents.push_back(document(parentNode.FullPath));
+            if(ImGui::IsMouseDoubleClicked(0) && ImGui::IsItemClicked()){
+                open_documents.push_back(document(parentNode.FullPath));
+            }
         }
     }
     ImGui::PopID();
+}
+
+void Window::CreateTerminal() {
+    ImGui::Text("%s", term.c_str());
+    char *buf;
+    buf = (char*) calloc(100, 100*sizeof(char));
+    ImGui::InputText(" ", buf, 100);
+    if(ImGui::IsKeyPressed(ImGuiKey_Enter)) {
+        char buffer[128];
+        FILE* pipe = popen(buf, "r");
+        if (!pipe) throw std::runtime_error("popen() failed!");
+        try {
+            while (fgets(buffer, sizeof buffer, pipe) != nullptr) {
+                term += buffer;
+            }
+        } catch (...) {
+            pclose(pipe);
+            throw;
+        }
+        pclose(pipe);
+    }
 }

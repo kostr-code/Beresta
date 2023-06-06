@@ -27,7 +27,7 @@ private:
     const char *glsl_version;
     ImVec4 clear_color = ImVec4(0.02f, 0.22f, 0.42f, 1.00f);
     int display_w, display_h;
-    directory_node root_node = CreateDirectoryNodeTreeFromPath("C:/Users/MKD/CLionProjects/Beresta");
+    directory_node root_node = CreateDirectoryNodeTreeFromPath("/home/kostr/Documents/Projects/Beresta");
     ImVector<document> open_documents;
 
 protected:
@@ -50,6 +50,8 @@ public:
     static void RenderMenuBar();
     static void RenderInputField(ImVector<char> text, bool change);
     void RecursivelyDisplayDirectoryNode(const directory_node& parentNode);
+    void CreateTerminal();
+    std::string term = "";
     ~Window();
 };
 
